@@ -2,15 +2,36 @@
 
 #Author: Konstantin Mishin
 
-#This is a simplified youtube-dl script that is intended to download the most
-#compatible video and audio (mp4,mp3) from youtube videos, playlists, and channels.
 #to-do:
 #1) add help with how to use the script.
-#2) modify the script for more complete downloads: e.g metadata, subtitles.
-#3) allow the user to configure several preset youtube-dl config files.
+#2) modify the script for more complete downloads: e.g metadata, subtitles..
 
-AUDIO_OR_VIDEO=$1
+function usage {
+cat <<HELP
+
+USAGE: $0 [option] URL 
+
+This is a simplified youtube-dl script that is intended to easily download the 
+most compatible video and audio (mp4,mp3) from youtube videos, playlists, and 
+channels.
+
+Where:
+-h show this help text
+-v download as video
+-a download as audio
+URL - URL of youtube video, channel, or playlist
+
+NOTE: If playlist download is intended, make sure to give the playlist ID:
+For example, in the following URL: &list=PLbQ-gSLYQEc6IWgKJNOMUONgtNXdwVcDC
+the playlist ID is PLuUdFsbOK_8o1BzPcXHwILC7UN0MmTo5- .
+
+HELP
+}
+
+ACTION=$1
 URL=$2
+
+# Date and time can be used to date downloaded channels/playlists
 
 DATE_UN=$(date +%D)
 TIME_UN=$(date +%T)
@@ -22,35 +43,43 @@ DATETIME="d"$DATE_F"t"$TIME_F
 DEST=''
 
 function form_destination {
-    if [ $AUDIO_OR_VIDEO = "-v" ]; then
+    if [ $ACTION = "-v" ]; then
         FORMAT="Video"
     elif
-       [ $AUDIO_OR_VIDEO = "-a" ]; then
+       [ $ACTION = "-a" ]; then
         FORMAT="Audio"
-    else
-        echo "Wrong file format specified"
-        exit 1
     fi
 
+
+    # to-do stripping extra spaces from the destination is necessary
+
     if [[ $URL != *youtube* ]]; then
-        DEST="$PWD/YT_Playlist %(uploader)s %(playlist_title)s "$FORMAT"_$DATETIME/%(title)s.%(ext)s"
-    elif [[ $URL = *channel* ]]; then
-        DEST="$PWD/YT_Channel %(uploader)s "$FORMAT"_$DATETIME/%(title)s.%(ext)s"
+        DEST="$PWD/Downloads/$FORMAT/Playlist %(playlist_uploader)s \
+        %(playlist_title)s "$FORMAT"/%(title)s.%(ext)s"
+
+    # improve the next method to detect channel: it is not robust enough, 
+    # and the case may trigger in a normal video if url contains either string.
+
+    elif [[ $URL == *channel* || $URL == *user* ]]; then
+        DEST="$PWD/Downloads/$FORMAT/Channel %(uploader)s \
+        "$FORMAT"/%(title)s.%(ext)s"
     else
-        DEST="%(title)s.%(ext)s"
+        DEST="$PWD/Downloads/$FORMAT/%(title)s.%(ext)s"
     fi
-        
 }
 
 function download {
     form_destination
-    if [ $AUDIO_OR_VIDEO = "-v" ]; then
+    if [ $ACTION = "-v" ]; then
         youtube-dl -i -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio' \
-        --merge-output-format mp4 --retries 10 -o "$DEST" $URL
-    elif [ $AUDIO_OR_VIDEO = "-a" ]; then
+        --merge-output-format mp4 --retries 30 -o "$DEST" $URL
+    elif [ $ACTION = "-a" ]; then
         youtube-dl -i --extract-audio --audio-format mp3 -o "$DEST" $URL
     fi
 }
 
-download
-
+if [ $ACTION = "-h" ]; then
+    usage
+else
+    download
+fi
