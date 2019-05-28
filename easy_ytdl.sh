@@ -2,10 +2,6 @@
 
 #Author: Konstantin Mishin
 
-#to-do:
-#1) add help with how to use the script.
-#2) modify the script for more complete downloads: e.g metadata, subtitles..
-
 function usage {
 cat <<HELP
 

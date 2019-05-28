@@ -4,3 +4,4 @@ Downloads/*
 !Downloads/downloads.here
 sources/*
 !sources/audio_video_sources.here
+!sources/*.example
