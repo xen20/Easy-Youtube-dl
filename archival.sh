@@ -24,9 +24,9 @@ Remember to put your sources into the sources folder in the format shown in the 
 
 Where:
 [option]
--h show this help text
--v download as video
--a download as audio
+-h --help show this help text
+-v --video download as video
+-a --audio download as audio
 [source]
 -c download from video/audio_channels.txt
 -p download from video/audio_playlists.txt
@@ -77,16 +77,16 @@ function create_config {
 
 function update_config_paths {
 
-    if [ $DOWNLOAD_FORMAT = "-v" ]; then
+    if [ $DOWNLOAD_FORMAT = "-v" ] || [ $DOWNLOAD_FORMAT = "--video" ]; then
         CONFIG_PATH="$CONFIGS_DIR/video.conf"
         ARCHIVES_PATH="$ARCHIVES_DIR/video.txt"
-    elif [ $DOWNLOAD_FORMAT = "-a" ]; then
+    elif [ $DOWNLOAD_FORMAT = "-a" ] || [ $DOWNLOAD_FORMAT = "--audio" ]; then
         CONFIG_PATH="$CONFIGS_DIR/audio.conf"
         ARCHIVES_PATH="$ARCHIVES_DIR/audio.txt"
     fi
 }
 
-if [ $DOWNLOAD_FORMAT = "-h" ]; then
+if [ $DOWNLOAD_FORMAT = "-h"]  || [ $DOWNLOAD_FORMAT = "--help" ]; then
     usage
 else
     update_config_paths
