@@ -55,37 +55,36 @@ function create_config {
         fi
     fi
 
-        touch "$CONFIG_PATH"
-        echo "#Dummy line for sed" > "$CONFIG_PATH"
+    touch "$CONFIG_PATH"
+    echo "#Dummy line for sed" > "$CONFIG_PATH"
 
-        sed -i "\$a--download-archive '$ARCHIVES_PATH'" "$CONFIG_PATH"
-        #sed -i "\$a--no-download-archive '$ARCHIVES_PATH'" "$CONFIG_PATH"
+    sed -i "\$a--download-archive '$ARCHIVES_PATH'" "$CONFIG_PATH"
 
-        sed -i "\$a--datebefore '$TWO_DAYS_AGO'" "$CONFIG_PATH"
-        sed -i "\$a-a '$SOURCES_PATH'" "$CONFIG_PATH"
-        sed -i "\$a-o '$OUTPUT_PATH'" "$CONFIG_PATH"
+    sed -i "\$a--datebefore '$TWO_DAYS_AGO'" "$CONFIG_PATH"
+    sed -i "\$a-a '$SOURCES_PATH'" "$CONFIG_PATH"
+    sed -i "\$a-o '$OUTPUT_PATH'" "$CONFIG_PATH"
 
-        sed -i "\$a-i" "$CONFIG_PATH"
+    sed -i "\$a-i" "$CONFIG_PATH"
 
-        # Best available video and audio
-        sed -i "\$a-f 'bestvideo*+bestaudio/best'" "$CONFIG_PATH"
+    # Best available video and audio
+    sed -i "\$a-f 'bestvideo*+bestaudio/best'" "$CONFIG_PATH"
 
-        # Use MKV as the merged container
-        sed -i "\$a--merge-output-format mkv" "$CONFIG_PATH"
+    # Use MKV as the merged container
+    sed -i "\$a--merge-output-format mkv" "$CONFIG_PATH"
 
-        # Embed all available subtitles as soft subtitles
-        sed -i "\$a--all-subs" "$CONFIG_PATH"
-        sed -i "\$a--embed-subs" "$CONFIG_PATH"
+    # Download all subtitles and embed them into the media file
+    sed -i "\$a--sub-langs all" "$CONFIG_PATH"
+    sed -i "\$a--embed-subs" "$CONFIG_PATH"
 
-        # Embed the thumbnail, but do not leave a separate thumbnail file
-        sed -i "\$a--embed-thumbnail" "$CONFIG_PATH"
+    # Embed the thumbnail without retaining a separate thumbnail file
+    sed -i "\$a--embed-thumbnail" "$CONFIG_PATH"
 
-        # Embed metadata in the MKV
-        sed -i "\$a--embed-metadata" "$CONFIG_PATH"
-
-        # Preserve the full description and complete extractor metadata
-        sed -i "\$a--write-description" "$CONFIG_PATH"
-        sed -i "\$a--write-info-json" "$CONFIG_PATH"
+    # Embed metadata in the media file
+    sed -i "\$a--embed-metadata" "$CONFIG_PATH"
+    
+    # Preserve the full description and complete extractor metadata
+    #sed -i "\$a--write-description" "$CONFIG_PATH"
+    #sed -i "\$a--write-info-json" "$CONFIG_PATH"
 }
 
 function update_config_paths {
@@ -108,3 +107,5 @@ else
     create_config
     yt-dlp --config-location "$CONFIG_PATH"
 fi
+
+
