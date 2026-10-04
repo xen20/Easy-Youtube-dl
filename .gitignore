@@ -5,3 +5,5 @@ Downloads/*
 sources/*
 !sources/audio_video_sources.here
 !sources/*.example
+configs/*
+!configs/configs.here

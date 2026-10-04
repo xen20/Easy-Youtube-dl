@@ -67,24 +67,23 @@ function create_config {
     sed -i "\$a-i" "$CONFIG_PATH"
 
     # Best available video and audio
-    sed -i "\$a-f 'bestvideo*+bestaudio/best'" "$CONFIG_PATH"
+    #sed -i "\$a-f 'bestvideo*+bestaudio/best'" "$CONFIG_PATH"
 
     # Use MKV as the merged container
     sed -i "\$a--merge-output-format mkv" "$CONFIG_PATH"
 
     # Download all subtitles and embed them into the media file
-    sed -i "\$a--sub-langs all" "$CONFIG_PATH"
+    sed -i "\$a--sub-langs 'all,-live_chat'" "$CONFIG_PATH"
     sed -i "\$a--embed-subs" "$CONFIG_PATH"
+    
+    # Download and retain a separate thumbnail image
+    sed -i "\$a--write-thumbnail" "$CONFIG_PATH"
 
     # Embed the thumbnail without retaining a separate thumbnail file
     sed -i "\$a--embed-thumbnail" "$CONFIG_PATH"
 
     # Embed metadata in the media file
     sed -i "\$a--embed-metadata" "$CONFIG_PATH"
-    
-    # Preserve the full description and complete extractor metadata
-    #sed -i "\$a--write-description" "$CONFIG_PATH"
-    #sed -i "\$a--write-info-json" "$CONFIG_PATH"
 }
 
 function update_config_paths {
